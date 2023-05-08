@@ -1,0 +1,19 @@
+﻿@page "/"
+@inject IConfiguration config
+
+<PageTitle>Index</PageTitle>
+
+<ModuleTitle Title="@HelloMessage"/>
+
+Welcome to your new Blazor app. hot reload
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    public string HelloMessage = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        HelloMessage = config["HelloMessage"];
+    }
+}

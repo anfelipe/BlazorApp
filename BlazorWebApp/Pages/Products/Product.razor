@@ -1,0 +1,79 @@
+@page "/product"
+@page "/product/category/{IdCategoryParam?}"
+
+@implements IDisposable
+
+@inject BlazorWebApp.Services.IProductService productService;
+@inject BlazorWebApp.Services.ICategoryService categoryService;
+@inject BlazorWebApp.State.StateContainerService stateService;
+@inject IJSRuntime JSRuntime
+@inject ILogger<BlazorWebApp.Models.Product> logger;
+@inject IToastService toastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Product</PageTitle>
+
+<ModuleTitle Title="Products"></ModuleTitle>
+
+<button class="btn btn-dark" @onclick="@(() => NavigationManager.NavigateTo("/product/add"))">Add Product</button>
+
+<hr />
+
+<EditForm Model="@product" OnSubmit="@GetProducts">
+  <div class="products-filter">
+    <div class="row align-items-center">
+      <div class="col-3">        
+        <InputSelect id="category" @bind-Value="product.CategoryId" title="Category" class="form-control">
+          <option value="0">Select Category...</option>
+          @foreach (var category in categories)
+          {
+            <option value="@category.Id">@category.Name</option>
+          }
+        </InputSelect>
+      </div>
+
+      <div class="col-3">
+        <InputText id="image" @bind-Value="product.Title" title="Title" class="form-control" />
+      </div>
+
+      <div class="col-4">
+        <button class="btn btn-primary" type="submit">Filter</button>
+      </div>
+
+    </div>
+  </div>
+</EditForm>
+
+<br />
+
+@if (products is not null)
+{
+  @if (products.Any())
+  {  
+    <div class="products-container">
+      @foreach (var product in products)
+      {
+        <div class="card">
+          <img class="card-img-top" src="@product.Images?[0]" alt="Product" loading="lazy" width="270" height="210">
+          <div class="card-body">
+            <h4><b>@product.Title</b></h4>
+            <p>@product.Price.ToString("C")</p>
+            <button title="Delete" class="btn btn-danger btn-delete" @onclick="@(() => DeleteProduct(product))">
+              <span class="oi oi-trash"></span>
+            </button>
+            <button title="Update" class="btn btn-primary" @onclick="@(() => EditProduct(product))">
+              <span class="oi oi-pencil"></span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }else{
+    <NoRecords/>
+  }
+}
+else
+{  
+  <Loading/>
+}
+

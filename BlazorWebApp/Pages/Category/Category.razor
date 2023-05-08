@@ -1,0 +1,54 @@
+@page "/category"
+
+@implements IDisposable
+
+@inject BlazorWebApp.Services.IProductService productService;
+@inject BlazorWebApp.Services.ICategoryService categoryService;
+@inject BlazorWebApp.State.StateContainerService stateService;
+@inject IJSRuntime JSRuntime
+@inject ILogger<BlazorWebApp.Models.Product> logger;
+@inject IToastService toastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Category</PageTitle>
+
+<ModuleTitle Title="Category"></ModuleTitle>
+
+<button class="btn btn-dark" @onclick="@(() => AddCategory())">Add Category</button>
+
+<hr />
+<br />
+
+@if (categories is not null)
+{
+  @if (categories.Any())
+  {  
+    <div class="category-container">
+      @foreach (var category in categories)
+      {
+        <div class="card">
+          <img class="card-img-top" src="@category.Image" alt="Category" loading="lazy" width="270" height="210">
+          <div class="card-body">
+            <h4><b>@category.Name</b></h4>            
+            <button title="Delete" class="btn btn-danger btn-delete" @onclick="@(() => DeleteCategory(category))">
+              <span class="oi oi-trash"></span>
+            </button>
+            <button title="Update" class="btn btn-primary" @onclick="@(() => EditCategory(category))">
+              <span class="oi oi-pencil"></span>
+            </button>
+            <button title="Products" class="btn btn-primary" @onclick="@(() => Products(category.Id))">
+              <span class="oi oi-list"></span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }else{
+    <NoRecords/>
+  }
+}
+else
+{  
+  <Loading/>
+}
+

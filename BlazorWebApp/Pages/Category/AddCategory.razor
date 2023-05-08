@@ -1,0 +1,50 @@
+@page "/category/add"
+@page "/category/edit/{IdCategoryParam?}"
+
+@inject BlazorWebApp.Services.ICategoryService categoryService
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+
+<PageTitle>Add</PageTitle>
+
+<ModuleTitle Title="Add Category"></ModuleTitle>
+
+<button class="btn btn-dark" @onclick="@(() => GoBack())">Go back Category</button>
+
+<hr />
+
+@if (!string.IsNullOrEmpty(IdCategoryParam) && string.IsNullOrEmpty(category.Name.Trim()))
+{
+  <Loading />
+}
+
+<EditForm Model="@category" OnSubmit="@Save">
+  <div class="row">
+    <div class="col-8 form-group">
+      <label for="title" class="col-form-label">Title</label>
+      <InputText id="title" @bind-Value="category.Name" required class="form-control" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col form-group">
+      <label for="image" class="col-form-label">Image (Url)</label>
+      <InputText id="image" @bind-Value="category.Image" required class="form-control" />
+    </div>
+  </div>
+
+  @if (!string.IsNullOrEmpty(category.Image))
+  {
+    <br/>
+    <div class="row">
+      <div class="category-container">
+        <div class="card">
+          <img class="card-img-top" src="@category.Image" alt="Category" loading="lazy" width="270" height="210">
+        </div>
+      </div>
+    </div>
+  }
+
+  <hr />
+  <button class="btn btn-primary" type="submit">@NameBottonSave</button>
+</EditForm>
+
